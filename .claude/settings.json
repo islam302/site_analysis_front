@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -v src/pages/LoginPage.tsx src/components/ProtectedRoute.tsx src/context/AuthContext.tsx src/api/auth.ts src/api/tokens.ts)",
+      "Bash(rmdir src/context)",
+      "Bash(npm run *)",
+      "Bash(kill %1)",
+      "Bash(npx vite *)",
+      "Bash(npx tsc *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"tsc exit: $?\")"
+    ]
+  }
+}

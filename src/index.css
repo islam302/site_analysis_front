@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans text-base antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  * {
+    @apply border-hairline;
+  }
+
+  /* Consistent focus treatment across interactive elements */
+  :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+    @apply outline-none ring-2 ring-accent/50 ring-offset-1 ring-offset-canvas;
+  }
+
+  ::selection {
+    background: rgba(67, 56, 202, 0.14);
+  }
+}
+
+@layer utilities {
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* thin, unobtrusive scrollbars for code blocks */
+  .scroll-thin::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: #d6d3d1;
+    border-radius: 6px;
+  }
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Indeterminate progress bar — a slim accent sliver that sweeps across.
+     Used while a report is pending/processing (unknown completion time). */
+  .progress-indeterminate {
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-indeterminate::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(67, 56, 202, 0.85),
+      transparent
+    );
+    animation: indeterminate-sweep 1.5s ease-in-out infinite;
+  }
+
+  @keyframes indeterminate-sweep {
+    0% {
+      transform: translateX(-120%);
+    }
+    100% {
+      transform: translateX(320%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-indeterminate::before {
+      animation-duration: 3s;
+    }
+  }
+}
