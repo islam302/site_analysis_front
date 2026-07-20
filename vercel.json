@@ -2,8 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/site-analysis/:path*",
-      "destination": "https://una-ai-tools-apis.una-oic.org/site-analysis/:path*"
+      "source": "/site-analysis/api/v1/full_report/",
+      "destination": "https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1/full_report/"
+    },
+    {
+      "source": "/site-analysis/api/v1/full_report/:id/",
+      "destination": "https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1/full_report/:id/"
+    },
+    {
+      "source": "/site-analysis/media/:path*",
+      "destination": "https://una-ai-tools-apis.una-oic.org/site-analysis/media/:path*"
     },
     {
       "source": "/(.*)",
