@@ -61,7 +61,7 @@ export function EnvBar() {
         {API_BASE_URL_IS_DEFAULT && (
           <span
             className={cn(
-              "rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5",
+              "rounded border border-warn-border bg-warn-bg px-1.5 py-0.5",
               "font-medium text-warn",
             )}
             title="VITE_API_BASE_URL is not set — using the built-in default."

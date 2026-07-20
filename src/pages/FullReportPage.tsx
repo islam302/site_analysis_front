@@ -167,7 +167,7 @@ export function FullReportPage() {
                 if (clientError) setClientError(null);
               }}
               placeholder="https://example.com"
-              className="h-11 w-full rounded-lg border border-hairline bg-surface pl-9 pr-3 font-mono text-sm text-ink placeholder:text-ink-faint focus:border-accent focus-visible:ring-2 focus-visible:ring-accent/40 disabled:cursor-not-allowed disabled:bg-stone-50 disabled:text-ink-muted"
+              className="h-11 w-full rounded-lg border border-hairline bg-surface pl-9 pr-3 font-mono text-sm text-ink placeholder:text-ink-faint focus:border-accent-ink focus-visible:ring-2 focus-visible:ring-accent-ink/40 disabled:cursor-not-allowed disabled:bg-muted disabled:text-ink-muted"
             />
           </div>
 
@@ -250,7 +250,7 @@ export function FullReportPage() {
           {/* Loading sweep bar — visible only while the job is in flight */}
           {busy && (
             <div
-              className="progress-indeterminate h-0.5 w-full bg-stone-100"
+              className="progress-indeterminate h-0.5 w-full bg-muted-strong"
               role="progressbar"
               aria-label="Report generation in progress"
             />
@@ -272,7 +272,7 @@ export function FullReportPage() {
               </Alert>
             ) : isStarting ? (
               <div className="flex items-center gap-2.5 text-sm text-ink-muted">
-                <Loader2 size={15} className="animate-spin text-accent" />
+                <Loader2 size={15} className="animate-spin text-accent-ink" />
                 Queuing your report…
               </div>
             ) : job ? (
@@ -294,7 +294,7 @@ export function FullReportPage() {
                   {(isActive || isCompleted) && (
                     <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-xs tabular-nums text-ink-muted">
                       {isActive && (
-                        <Loader2 size={12} className="animate-spin text-accent" />
+                        <Loader2 size={12} className="animate-spin text-accent-ink" />
                       )}
                       {formatDuration(displayDuration)}
                     </span>
@@ -305,7 +305,7 @@ export function FullReportPage() {
 
                 {/* Active loading message */}
                 {isActive && (
-                  <div className="rounded border border-hairline bg-stone-50/70 px-3.5 py-3">
+                  <div className="rounded border border-hairline bg-muted-strong px-3.5 py-3">
                     <p className="text-sm font-medium text-ink">
                       {job.status === "pending"
                         ? "Queued — waiting for a worker…"
@@ -349,7 +349,7 @@ export function FullReportPage() {
 
                 {/* Completed — download */}
                 {isCompleted && (
-                  <div className="flex flex-wrap items-center gap-3 rounded border border-emerald-200 bg-emerald-50/60 px-3.5 py-3">
+                  <div className="flex flex-wrap items-center gap-3 rounded border border-success-border bg-success-bg px-3.5 py-3">
                     <Check size={16} className="text-success" strokeWidth={2} />
                     <span className="text-sm text-ink">
                       Report ready
@@ -366,7 +366,7 @@ export function FullReportPage() {
                         )}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-auto inline-flex h-9 items-center gap-1.5 rounded border border-accent bg-accent px-3.5 text-sm font-medium text-white hover:bg-accent-hover"
+                        className="ml-auto inline-flex h-9 items-center gap-1.5 rounded border border-accent bg-accent px-3.5 text-sm font-medium text-accent-fg hover:bg-accent-hover"
                       >
                         <Download size={15} strokeWidth={1.75} />
                         Download PDF
@@ -401,7 +401,7 @@ function ToolStatusRow({
     <div
       className={cn(
         "flex items-center justify-between gap-3 rounded border px-3 py-2 transition-colors",
-        cfg.pending ? "border-hairline bg-stone-50/50" : "border-hairline",
+        cfg.pending ? "border-hairline bg-muted" : "border-hairline",
       )}
     >
       <span

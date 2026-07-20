@@ -7,7 +7,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   // Where the real backend lives. Overridable via VITE_API_PROXY_TARGET.
-  const proxyTarget = env.VITE_API_PROXY_TARGET || "http://localhost:8000";
+  const proxyTarget =
+    env.VITE_API_PROXY_TARGET || "https://una-ai-tools-apis.una-oic.org";
 
   return {
     plugins: [react()],
@@ -19,16 +20,14 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       host: true,
-      // Proxy API (and media) calls to the backend so the browser makes
-      // same-origin requests — no CORS, works from localhost / 127.0.0.1 / LAN IP.
+      // The backend is mounted under /site-analysis (both /api/v1 and /media).
+      // Proxying it keeps browser requests same-origin, so there is no CORS —
+      // the remote host does not send access-control-allow-origin.
       proxy: {
-        "/api": {
+        "/site-analysis": {
           target: proxyTarget,
           changeOrigin: true,
-        },
-        "/media": {
-          target: proxyTarget,
-          changeOrigin: true,
+          secure: true,
         },
       },
     },

@@ -2,7 +2,7 @@
 
 // Relative by default → served through the Vite dev proxy (see vite.config.ts),
 // which forwards to the backend. Same-origin, so no CORS.
-const DEFAULT_BASE_URL = "/api/v1";
+const DEFAULT_BASE_URL = "/site-analysis/api/v1";
 
 function normalizeBaseUrl(raw: string | undefined): string {
   const value = (raw ?? DEFAULT_BASE_URL).trim() || DEFAULT_BASE_URL;
@@ -22,6 +22,7 @@ export const API_BASE_URL_IS_PROXIED = !/^https?:\/\//i.test(API_BASE_URL);
 
 /** Display-only: where the proxy forwards, when known. */
 export const API_PROXY_TARGET =
-  import.meta.env.VITE_API_PROXY_TARGET?.trim() || "http://localhost:8000";
+  import.meta.env.VITE_API_PROXY_TARGET?.trim() ||
+  "https://una-ai-tools-apis.una-oic.org";
 
 export const APP_MODE = import.meta.env.MODE;

@@ -12,23 +12,23 @@ interface Config {
 const MAP: Record<JobStatus, Config> = {
   pending: {
     label: "Pending",
-    className: "text-ink-muted bg-stone-100 border-stone-200",
+    className: "text-ink-muted bg-muted-strong border-hairline",
     icon: <CircleDashed size={13} strokeWidth={1.75} />,
   },
   processing: {
     label: "Processing",
-    className: "text-info bg-sky-50 border-sky-200",
+    className: "text-info bg-info-bg border-info-border",
     icon: <Loader2 size={13} strokeWidth={1.75} />,
     spin: true,
   },
   completed: {
     label: "Completed",
-    className: "text-success bg-emerald-50 border-emerald-200",
+    className: "text-success bg-success-bg border-success-border",
     icon: <CheckCircle2 size={13} strokeWidth={1.75} />,
   },
   failed: {
     label: "Failed",
-    className: "text-danger bg-red-50 border-red-200",
+    className: "text-danger bg-danger-bg border-danger-border",
     icon: <XCircle size={13} strokeWidth={1.75} />,
   },
 };

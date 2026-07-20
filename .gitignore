@@ -7,3 +7,9 @@ dist-ssr
 .DS_Store
 *.log
 .vite
+
+# Never commit compiler output emitted next to the Vite config — a stale
+# vite.config.js silently takes precedence over vite.config.ts.
+vite.config.js
+vite.config.d.ts
+*.tsbuildinfo

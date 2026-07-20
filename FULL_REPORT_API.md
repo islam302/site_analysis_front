@@ -4,7 +4,7 @@ Generate a combined website-analysis **PDF** from one URL. It runs 6 tools
 (PageSpeed, GTmetrix, WAVE accessibility, SSL/TLS, broken links, structured data)
 and returns a styled PDF with a recommendations section, in **English or Arabic**.
 
-Base URL: `http://localhost:8000/api/v1` (change per environment).
+Base URL: `https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1` (change per environment).
 
 It's an **async job**: you `POST` to start it, then **poll** a status endpoint until
 the PDF is ready, then use the `download_url`.
@@ -69,7 +69,7 @@ Content-Type: application/json
 {
   "id": "b1c2...-uuid",
   "status": "pending",
-  "status_url": "http://localhost:8000/api/v1/full_report/b1c2...-uuid/"
+  "status_url": "https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1/full_report/b1c2...-uuid/"
 }
 ```
 
@@ -100,7 +100,7 @@ GET /api/v1/full_report/{id}/
     "links": "ok",
     "structured_data": "ok"
   },
-  "download_url": "http://localhost:8000/media/reports/.../analysis-example-com-en.pdf",
+  "download_url": "https://una-ai-tools-apis.una-oic.org/site-analysis/media/reports/.../analysis-example-com-en.pdf",
   "error_message": "",
   "created_at": "2026-07-16T09:30:00Z",
   "updated_at": "2026-07-16T09:30:42Z"
@@ -117,9 +117,13 @@ GET /api/v1/full_report/{id}/
 
 Notes:
 - `download_url` is `null` until `status` is `completed`.
-- `tools_status` reports each tool independently. A single tool being `failed`
-  (e.g. GTmetrix out of credits) does **not** fail the whole report — the PDF is
-  still produced with that section marked "Could not run".
+- `tools_status` reports each tool independently. Each value is one of:
+  `"ok"` (ran fine), `"failed"` (errored — e.g. GTmetrix out of credits), or
+  `"skipped"` (disabled on the server via config). A `failed` or `skipped` tool
+  does **not** fail the whole report — the PDF is still produced, with that
+  section marked "Could not run" / "not included".
+- Which tools run is a **server setting** (`FULL_REPORT_TOOLS`), not something the
+  request controls. If a tool is always `skipped`, it's turned off server-side.
 - Poll every **~3 seconds**. A full report typically takes ~20–60s.
 
 ---
@@ -141,7 +145,7 @@ download link:
 optionally show which stage it's in) until the PDF is ready.
 
 ```js
-const BASE = "http://localhost:8000/api/v1";
+const BASE = "https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1";
 
 async function runFullReport(url, { strategy = "mobile", lang = "en", onStatus } = {}) {
   // 1) start — instant; we only get a job id back, NOT the PDF

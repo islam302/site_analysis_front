@@ -9,20 +9,20 @@ const TONES: Record<
   { border: string; bg: string; icon: React.ReactNode; text: string }
 > = {
   error: {
-    border: "border-red-200",
-    bg: "bg-red-50",
+    border: "border-danger-border",
+    bg: "bg-danger-bg",
     text: "text-danger",
     icon: <XCircle size={16} strokeWidth={1.75} />,
   },
   warning: {
-    border: "border-amber-200",
-    bg: "bg-amber-50",
+    border: "border-warn-border",
+    bg: "bg-warn-bg",
     text: "text-warn",
     icon: <AlertTriangle size={16} strokeWidth={1.75} />,
   },
   info: {
-    border: "border-sky-200",
-    bg: "bg-sky-50",
+    border: "border-info-border",
+    bg: "bg-info-bg",
     text: "text-info",
     icon: <Info size={16} strokeWidth={1.75} />,
   },

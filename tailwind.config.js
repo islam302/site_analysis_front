@@ -1,26 +1,62 @@
 /** @type {import('tailwindcss').Config} */
+
+// Every color resolves to a CSS variable holding space-separated RGB channels,
+// so a single `.dark` override re-themes the whole app and Tailwind's opacity
+// modifiers (bg-surface/90, ring-accent/40) keep working.
+const withOpacity = (variable) => `rgb(var(${variable}) / <alpha-value>)`;
+
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        canvas: "#FAFAF9",
-        surface: "#FFFFFF",
-        hairline: "#E7E5E4",
+        canvas: withOpacity("--c-canvas"),
+        surface: withOpacity("--c-surface"),
+        hairline: withOpacity("--c-hairline"),
+
+        // Subtle neutral fills (formerly stone-50 / stone-100).
+        muted: {
+          DEFAULT: withOpacity("--c-muted"),
+          strong: withOpacity("--c-muted-strong"),
+        },
+
         ink: {
-          DEFAULT: "#1E293B",
-          muted: "#64748B",
-          faint: "#94A3B8",
+          DEFAULT: withOpacity("--c-ink"),
+          muted: withOpacity("--c-ink-muted"),
+          faint: withOpacity("--c-ink-faint"),
         },
+
         accent: {
-          DEFAULT: "#4338CA",
-          hover: "#3730A3",
-          ink: "#1E293B",
+          // `accent` is the FILL (buttons, brand mark); `accent-fg` sits on it.
+          DEFAULT: withOpacity("--c-accent"),
+          hover: withOpacity("--c-accent-hover"),
+          fg: withOpacity("--c-accent-fg"),
+          // `accent-ink` is accent used as FOREGROUND (icons, focus rings) —
+          // lifted in dark mode so it stays legible on dark surfaces.
+          ink: withOpacity("--c-accent-ink"),
         },
-        danger: "#DC2626",
-        warn: "#D97706",
-        info: "#0369A1",
-        success: "#059669",
+
+        danger: {
+          DEFAULT: withOpacity("--c-danger"),
+          bg: withOpacity("--c-danger-bg"),
+          border: withOpacity("--c-danger-border"),
+        },
+        warn: {
+          DEFAULT: withOpacity("--c-warn"),
+          bg: withOpacity("--c-warn-bg"),
+          border: withOpacity("--c-warn-border"),
+        },
+        info: {
+          DEFAULT: withOpacity("--c-info"),
+          bg: withOpacity("--c-info-bg"),
+          border: withOpacity("--c-info-border"),
+        },
+        success: {
+          DEFAULT: withOpacity("--c-success"),
+          bg: withOpacity("--c-success-bg"),
+          border: withOpacity("--c-success-border"),
+        },
       },
       fontFamily: {
         sans: [

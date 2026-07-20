@@ -10,7 +10,21 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <title>Schema Validator — Structured Data</title>
+    <title>Site Analysis — Full Report</title>
+    <script>
+      // Apply the stored theme before first paint to avoid a light flash.
+      (function () {
+        try {
+          var pref = localStorage.getItem("sa.theme") || "system";
+          var dark =
+            pref === "dark" ||
+            (pref === "system" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

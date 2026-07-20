@@ -35,7 +35,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             className={cn(
               "h-8 w-full appearance-none rounded border border-hairline bg-surface",
               "pl-2.5 pr-7 text-sm text-ink",
-              "focus:border-accent focus-visible:ring-2 focus-visible:ring-accent/40",
+              "focus:border-accent-ink focus-visible:ring-2 focus-visible:ring-accent-ink/40",
               "transition-colors",
               className,
             )}

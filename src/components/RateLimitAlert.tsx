@@ -33,7 +33,7 @@ export function RateLimitAlert({
   return (
     <div
       role="alert"
-      className="flex items-start gap-2.5 rounded border border-amber-200 bg-amber-50 px-3 py-2.5"
+      className="flex items-start gap-2.5 rounded border border-warn-border bg-warn-bg px-3 py-2.5"
     >
       <span className="mt-0.5 shrink-0 text-warn">
         <Timer size={16} strokeWidth={1.75} />

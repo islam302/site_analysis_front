@@ -20,41 +20,82 @@ authentication — the endpoint is public. The full contract is in
 
 ```bash
 npm install
-cp .env.example .env      # set VITE_API_BASE_URL if not localhost:8000
+cp .env.example .env
 npm run dev               # http://localhost:5173
 ```
 
 | Script            | Purpose                            |
 | ----------------- | ---------------------------------- |
 | `npm run dev`     | Vite dev server                    |
-| `npm run build`   | Typecheck (`tsc -b`) + prod build  |
+| `npm run build`   | Typecheck (`tsc --noEmit`) + build |
 | `npm run preview` | Serve the production build         |
-| `npm run lint`    | `tsc --noEmit` typecheck only      |
+| `npm run lint`    | Typecheck only                     |
 
-## Configuration
+## Configuration & the dev proxy
 
-`VITE_API_BASE_URL` sets the API base (default `http://localhost:8000/api/v1`).
-The current base URL is shown in the footer **env/debug bar** and flagged when the
-built-in default is in use — handy when pointing the UI at different backends.
+The API lives at:
 
-> The backend mounts under `FORCE_SCRIPT_NAME=/scraping-api`, so it reports 404
-> paths with that prefix — but requests are still made to `/api/v1/...` as the
-> docs specify. Do **not** add `/scraping-api` to the base URL.
+```
+https://una-ai-tools-apis.una-oic.org/site-analysis/api/v1
+```
 
-## Endpoints used (per `FULL_REPORT_API.md`)
+That host does **not** send `access-control-allow-origin`, so calling it directly
+from the browser fails CORS. To avoid that, requests go through the **Vite dev
+proxy**: the app uses a *relative* base URL, and Vite forwards `/site-analysis`
+(API **and** media/PDFs) to the real host server-side. Same-origin, no CORS, and
+it works from `localhost`, `127.0.0.1`, or your LAN IP.
 
-| Step          | Method | Path                        |
-| ------------- | ------ | --------------------------- |
-| Start report  | `POST` | `/api/v1/full_report/`      |
-| Poll status   | `GET`  | `/api/v1/full_report/{id}/` |
+| Variable                 | Default                                      | Purpose                              |
+| ------------------------ | -------------------------------------------- | ------------------------------------ |
+| `VITE_API_BASE_URL`      | `/site-analysis/api/v1`                      | Relative → goes through the proxy    |
+| `VITE_API_PROXY_TARGET`  | `https://una-ai-tools-apis.una-oic.org`       | Where the proxy forwards             |
+
+Point at a local backend instead:
+
+```bash
+VITE_API_PROXY_TARGET=http://localhost:8000
+```
+
+The footer **env/debug bar** shows the active base URL and proxy target.
+
+> ⚠️ Never commit a `vite.config.js` / `vite.config.d.ts`. Vite resolves `.js`
+> **before** `.ts`, so a stale compiled copy silently overrides `vite.config.ts`
+> (this is why the build script uses `tsc --noEmit` — it must not emit).
+
+## Endpoints used
+
+| Step         | Method | Path                        |
+| ------------ | ------ | --------------------------- |
+| Start report | `POST` | `/api/v1/full_report/`      |
+| Poll status  | `GET`  | `/api/v1/full_report/{id}/` |
 
 ## Flow
 
-1. Enter a URL, pick strategy (mobile/desktop) and language (en/ar).
-2. `POST /full_report/` returns `{ id, status, status_url }` (`202`).
-3. Poll `GET /full_report/{id}/` every ~3s until `completed` or `failed`.
-4. Per-tool status is shown as it resolves; on `completed`, the PDF
-   `download_url` is offered as a download / new-tab link.
+1. Enter a URL, pick strategy (defaults to **Desktop**) and language (defaults to **Arabic**).
+2. `POST /full_report/` returns `{ id, status, status_url }` (`202`), instantly.
+3. The job `id` is stored in the page URL (`?id=…`) so a refresh resumes polling.
+4. Poll `GET /full_report/{id}/` every ~3s while `pending`/`processing`, with a
+   live loading panel: sweep bar, elapsed timer, and a per-tool checklist.
+5. On `completed`, the PDF `download_url` is offered as a download link.
+
+`tools_status` values are `ok`, `failed`, or `skipped` — a `failed` or `skipped`
+tool does **not** fail the report; that section is just marked "Could not run".
+
+## Theming (light / dark)
+
+Every color is a CSS variable holding space-separated RGB channels, so the whole
+app re-themes from one `.dark` override in [`src/index.css`](src/index.css) —
+Tailwind opacity modifiers (`bg-surface/90`) keep working.
+
+- Toggle in the header cycles **Light → Dark → System**, persisted to
+  `localStorage` (`sa.theme`) and following the OS while set to *System*.
+- An inline script in `index.html` applies the theme before first paint, so
+  there is no light flash on load.
+- Token split: `accent` is the **fill** (buttons/brand, sized so white label text
+  clears 4.5:1), `accent-ink` is accent as **foreground** (icons, focus rings),
+  lifted in dark so it stays legible on dark surfaces.
+
+The dark theme passes WCAG AA on all text/background pairs.
 
 ## Accessibility & UX notes
 
@@ -62,7 +103,7 @@ built-in default is in use — handy when pointing the UI at different backends.
 - Real `<button>`s, labeled inputs, focus-visible rings.
 - Client-side URL validation before submit; 429 rate-limit surfaced with a live
   retry countdown; API error bodies surfaced with a Retry action.
-- Skeleton/quiet inline loading, never a full-page spinner.
+- Quiet inline loading, never a full-page spinner; reduced-motion respected.
 - Responsive down to 768px.
 
 ## Structure
@@ -71,7 +112,7 @@ built-in default is in use — handy when pointing the UI at different backends.
 src/
   api/          axios client, fullReport, error normalizer
   types/api.ts  the Full Report API contract as TypeScript types
-  hooks/        useFullReport (start mutation + polling query)
+  hooks/        useFullReport (start + polling), useElapsed
   components/   layout, env bar, rate-limit alert, UI primitives
   pages/        FullReport, NotFound
   lib/          config, query client, formatting, className helper
