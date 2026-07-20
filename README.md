@@ -62,6 +62,41 @@ The footer **env/debug bar** shows the active base URL and proxy target.
 > **before** `.ts`, so a stale compiled copy silently overrides `vite.config.ts`
 > (this is why the build script uses `tsc --noEmit` — it must not emit).
 
+## Deploying to Vercel
+
+The Vite dev proxy is **dev-only**. In production the same job is done by
+server-side rewrites in [`vercel.json`](vercel.json):
+
+```
+/site-analysis/*  →  https://una-ai-tools-apis.una-oic.org/site-analysis/*
+/(.*)             →  /index.html      (SPA fallback)
+```
+
+This matters because the upstream API sends **no CORS headers** — pointing the
+browser straight at it would fail. The rewrite is server-to-server, so CORS
+never applies, and it covers the PDF (`/site-analysis/media/...`) too.
+
+Order is deliberate: the API rewrite is matched first, and Vercel serves real
+files from the filesystem *before* applying rewrites, so hashed build assets are
+unaffected by the catch-all.
+
+Vercel auto-detects the framework — no settings to change:
+
+| Setting          | Value           |
+| ---------------- | --------------- |
+| Framework        | Vite            |
+| Build command    | `npm run build` |
+| Output directory | `dist`          |
+| Install command  | `npm install`   |
+
+**No environment variables are required** — `VITE_API_BASE_URL` defaults to
+`/site-analysis/api/v1`, which is exactly what the rewrite expects. (Set it
+explicitly in Vercel only if you want to silence the amber `default` chip in the
+footer debug bar, or to point a preview deploy at a different backend.)
+
+> If you change the backend host, update it in **both** `vercel.json`
+> (production) and `.env` / `VITE_API_PROXY_TARGET` (local dev).
+
 ## Endpoints used
 
 | Step         | Method | Path                        |
