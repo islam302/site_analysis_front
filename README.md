@@ -87,8 +87,9 @@ Every color is a CSS variable holding space-separated RGB channels, so the whole
 app re-themes from one `.dark` override in [`src/index.css`](src/index.css) —
 Tailwind opacity modifiers (`bg-surface/90`) keep working.
 
-- Toggle in the header cycles **Light → Dark → System**, persisted to
-  `localStorage` (`sa.theme`) and following the OS while set to *System*.
+- Header toggle switches **Light ↔ Dark**, persisted to `localStorage`
+  (`sa.theme`). First visit seeds from your OS setting; after that it's explicit.
+  The label names the theme you'll get when you click.
 - An inline script in `index.html` applies the theme before first paint, so
   there is no light flash on load.
 - Token split: `accent` is the **fill** (buttons/brand, sized so white label text

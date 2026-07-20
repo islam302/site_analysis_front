@@ -1,37 +1,22 @@
-import { Monitor, Moon, Sun } from "lucide-react";
-import { useTheme, type ThemePreference } from "@/lib/theme";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/cn";
 
-const LABELS: Record<ThemePreference, string> = {
-  light: "Light",
-  dark: "Dark",
-  system: "System",
-};
-
-const ICONS: Record<ThemePreference, React.ReactNode> = {
-  light: <Sun size={15} strokeWidth={1.75} />,
-  dark: <Moon size={15} strokeWidth={1.75} />,
-  system: <Monitor size={15} strokeWidth={1.75} />,
-};
-
 /**
- * Cycles light → dark → system. The current preference is announced via the
- * accessible name, so the control isn't communicated by icon alone.
+ * Two-state Light/Dark switch. The label names the theme you'll get when you
+ * click, so the control never depends on the icon alone.
  */
 export function ThemeToggle({ className }: { className?: string }) {
-  const { preference, resolved, cycle } = useTheme();
-
-  const next: ThemePreference =
-    preference === "light" ? "dark" : preference === "dark" ? "system" : "light";
+  const { theme, toggle } = useTheme();
+  const isDark = theme === "dark";
+  const nextLabel = isDark ? "Light" : "Dark";
 
   return (
     <button
       type="button"
-      onClick={cycle}
-      title={`Theme: ${LABELS[preference]}${
-        preference === "system" ? ` (${resolved})` : ""
-      } — click for ${LABELS[next]}`}
-      aria-label={`Theme: ${LABELS[preference]}. Switch to ${LABELS[next]}.`}
+      onClick={toggle}
+      title={`Switch to ${nextLabel.toLowerCase()} mode`}
+      aria-label={`Switch to ${nextLabel.toLowerCase()} mode`}
       className={cn(
         "inline-flex h-8 items-center gap-1.5 rounded border border-hairline",
         "bg-surface px-2 text-xs font-medium text-ink-muted",
@@ -39,8 +24,12 @@ export function ThemeToggle({ className }: { className?: string }) {
         className,
       )}
     >
-      {ICONS[preference]}
-      <span className="hidden sm:inline">{LABELS[preference]}</span>
+      {isDark ? (
+        <Sun size={15} strokeWidth={1.75} />
+      ) : (
+        <Moon size={15} strokeWidth={1.75} />
+      )}
+      <span className="hidden sm:inline">{nextLabel}</span>
     </button>
   );
 }

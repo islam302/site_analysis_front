@@ -15,10 +15,10 @@
       // Apply the stored theme before first paint to avoid a light flash.
       (function () {
         try {
-          var pref = localStorage.getItem("sa.theme") || "system";
+          var stored = localStorage.getItem("sa.theme");
           var dark =
-            pref === "dark" ||
-            (pref === "system" &&
+            stored === "dark" ||
+            (stored !== "light" &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
           document.documentElement.classList.toggle("dark", dark);
           document.documentElement.style.colorScheme = dark ? "dark" : "light";
