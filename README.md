@@ -56,7 +56,6 @@ Point at a local backend instead:
 VITE_API_PROXY_TARGET=http://localhost:8000
 ```
 
-The footer **env/debug bar** shows the active base URL and proxy target.
 
 > ⚠️ Never commit a `vite.config.js` / `vite.config.d.ts`. Vite resolves `.js`
 > **before** `.ts`, so a stale compiled copy silently overrides `vite.config.ts`
@@ -91,8 +90,7 @@ Vercel auto-detects the framework — no settings to change:
 
 **No environment variables are required** — `VITE_API_BASE_URL` defaults to
 `/site-analysis/api/v1`, which is exactly what the rewrite expects. (Set it
-explicitly in Vercel only if you want to silence the amber `default` chip in the
-footer debug bar, or to point a preview deploy at a different backend.)
+explicitly only to point a preview deploy at a different backend.)
 
 > If you change the backend host, update it in **both** `vercel.json`
 > (production) and `.env` / `VITE_API_PROXY_TARGET` (local dev).

@@ -1,6 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
 import { FileText } from "lucide-react";
-import { EnvBar } from "./EnvBar";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Layout() {
@@ -24,8 +23,6 @@ export function Layout() {
       <main className="mx-auto w-full max-w-content flex-1 px-5 py-8">
         <Outlet />
       </main>
-
-      <EnvBar />
     </div>
   );
 }
