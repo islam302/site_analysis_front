@@ -46,6 +46,10 @@ const TOOL_ORDER = [
   "structured_data",
 ];
 
+// Tools we always present as "skipped" in the UI, regardless of what the API
+// reports (the backend controls actual execution via FULL_REPORT_TOOLS).
+const FORCED_SKIPPED = new Set(["accessibility"]);
+
 /** A tool counts as "resolved" once it's no longer waiting/pending. */
 function isResolved(status: ToolStatus | undefined): boolean {
   return Boolean(status) && status !== "pending";
@@ -120,13 +124,12 @@ export function FullReportPage() {
   // Always render the full 6-tool checklist so it fills in as results arrive.
   const toolEntries = useMemo(() => {
     const status = job?.tools_status ?? {};
-    const known = TOOL_ORDER.map((k) => ({
-      key: k,
-      status: status[k] as ToolStatus | undefined,
-    }));
+    const resolve = (k: string): ToolStatus | undefined =>
+      FORCED_SKIPPED.has(k) ? "skipped" : (status[k] as ToolStatus | undefined);
+    const known = TOOL_ORDER.map((k) => ({ key: k, status: resolve(k) }));
     const extra = Object.keys(status)
       .filter((k) => !TOOL_ORDER.includes(k))
-      .map((k) => ({ key: k, status: status[k] as ToolStatus }));
+      .map((k) => ({ key: k, status: resolve(k) as ToolStatus }));
     return [...known, ...extra];
   }, [job?.tools_status]);
 
